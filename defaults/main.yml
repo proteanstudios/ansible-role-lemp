@@ -1,3 +1,11 @@
 ---
 php_version: 8.0
 load_nginx_confs: false
+create_mysql_db: true
+install_composer: true
+
+# geerlingguy.mysql variables
+mysql_root_password: Le%3(2kjsAD^K
+
+#geerlingguy.mysql variables
+composer_version_branch: '--2'

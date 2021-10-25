@@ -1,0 +1,14 @@
+---
+- name: setup Mysql database 
+  mysql_db:
+    name: 
+      - "{{ mysql_db }}"
+    state: present
+
+- name: Setup Mysql User
+  mysql_user: 
+    name: "{{ mysql_user }}"
+    password: "{{ mysql_pass }}"
+    priv: "{{ mysql_db }}.*:ALL,GRANT"
+    state: present
+ 

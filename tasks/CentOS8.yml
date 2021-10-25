@@ -43,6 +43,23 @@
   include: load_nginx_confs.yml
   when: load_nginx_confs==true
 
+- name: run geerlingguy.mysql role
+  include_role: 
+    name: geerlingguy.mysql
+
+- name: load nginx config file
+  include: load_nginx_confs.yml
+  when: load_nginx_confs == true
+
+- name: Add Mysql DB and user
+  include: setup_mysql_db.yml
+  when: create_mysql_db == true
+
+- name: install geerlingguy.composer role
+  include_role: 
+    name: geerlingguy.composer
+  when: install_composer == true  
+ 
 ## start services
 - name: start php-fpm
   service: 
