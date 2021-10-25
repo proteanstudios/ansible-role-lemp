@@ -18,7 +18,7 @@ This role includes
 so, you might need to install those roles before run LEMP.
 
 ========
-Default variables: 
+### Default variables: 
 
 ```
 load_nginx_confs: false // indicates whether to load nginx configs j2 template files or not 
@@ -30,4 +30,12 @@ mysql_root_password: Le%3(2kjsAD^K
 
 #geerlingguy.mysql variables
 composer_version_branch: '--2'
+```
+
+NOTE: 
+- when `create_mysql_db: true`, you'll need define bellowed extra variables. It's required to create mysql user and database: 
+```
+mysql_db: <db_name>
+mysql_user: <db_username>
+mysql_pass: <db_user_password>
 ```
