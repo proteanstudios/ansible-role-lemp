@@ -1,0 +1,3 @@
+---
+- name: install bla bla
+  debug: msg="bla bla"

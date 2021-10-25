@@ -1,0 +1,73 @@
+---
+- name: Add EPEL configuration repo package & remi repo 
+  dnf:
+    name: 
+      - https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+      - https://rpms.remirepo.net/enterprise/remi-release-8.rpm
+- name: Ensure dnf-plugins are installed on CentOS 8+.
+  dnf:
+    name: dnf-plugins-core
+    state: present
+
+- name: Enable DNF module for CentOS 8+.
+  shell: |
+    dnf config-manager --set-enabled PowerTools
+    dnf module reset php
+    dnf module enable -y php:remi-{{ php_version }}
+  args:
+    warn: false
+  register: dnf_module_enable
+  changed_when: "'Nothing to do' not in dnf_module_enable.stdout"
+
+- name: install nginx, php and etc
+  dnf: 
+    name:
+      - nginx
+      - php
+      - php-common
+      - php-fpm
+      - php-mysqlnd
+      - php-bcmath
+      - php-curl
+      - php-json
+      - php-mbstring
+      - php-xml
+      - php-zip
+      - php-posix
+      - php-pgsql
+      - postgresql-server
+      - redis
+    state: latest
+
+- name: load nginx config file
+  include: load_nginx_confs.yml
+  when: load_nginx_confs==true
+
+## start services
+- name: start php-fpm
+  service: 
+    name: php-fpm 
+    state: started
+    enabled: yes
+
+- name: start nginx 
+  service: 
+    name: nginx 
+    state: started
+    enabled: yes
+
+- name: start postgres server
+  service: 
+    name: postgresql 
+    state: started
+    enabled: yes   
+
+- name: start redis server
+  service: 
+    name: redis 
+    state: started
+    enabled: yes
+
+- name: Confirm PHP version is correct.
+  shell: php -v | grep -F '{{ php_version }}'
+  changed_when: false  

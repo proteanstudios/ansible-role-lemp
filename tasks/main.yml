@@ -1,0 +1,4 @@
+---
+- block:
+  - include: detect_os.yml
+  - include: "{{ os_name }}.yml"

@@ -1,0 +1,3 @@
+---
+php_version: 8.0
+load_nginx_confs: false

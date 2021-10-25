@@ -1,0 +1,6 @@
+---
+- name: Detect os name
+  set_fact: 
+    os_name: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
+  when: os_name is not defined 
+ 

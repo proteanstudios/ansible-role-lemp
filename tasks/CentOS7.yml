@@ -1,0 +1,58 @@
+---
+- name: besure rhn-client-tools present 
+  yum: 
+    name: 
+      - rhn-client-tools
+    state: present
+
+- name: Add EPEL configuration repo package & remi repo 
+  yum:
+    name: 
+      - http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+      - http://rpms.remirepo.net/enterprise/remi-release-7.rpm      
+
+- name: install yum utils package if not exists
+  yum: 
+    name: yum-utils
+    state: present
+- name: "enable php {{ php_version }} repo"
+  shell: |
+    yum-config-manager --disable 'remi-php*'
+    yum-config-manager --enable   remi-php80
+
+- name: install nginx, php and etc
+  yum: 
+    name: 
+      - nginx
+      - php
+      - php-common
+      - php-fpm
+      - php-mysql
+      - php-bcmath
+      - php-curl
+      - php-json
+      - php-mbstring
+      - php-xml
+      - php-zip
+    state: latest
+
+- name: load nginx config file
+  include: load_nginx_confs.yml
+  when: load_nginx_confs==true
+
+## start services
+- name: start php-fpm
+  service: 
+    name: php-fpm 
+    state: started
+    enabled: yes
+
+- name: start nginx 
+  service: 
+    name: nginx 
+    state: started
+    enabled: yes
+
+- name: Confirm PHP version is correct.
+  shell: php -v | grep -F '{{ php_version }}'
+  changed_when: false  
