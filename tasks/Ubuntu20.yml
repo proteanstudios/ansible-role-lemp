@@ -1,3 +1,73 @@
 ---
-- name: install bla bla
-  debug: msg="bla bla"
+- block:  
+  - name: Install Prerequisites
+    apt: name={{ item }} update_cache=yes state=latest force_apt_get=yes
+    become: true
+    loop: [ 'aptitude' ]
+
+  - name: install ppa:ondrej/php repo 
+    apt_repository: 
+      repo: ppa:ondrej/php
+      state: present
+
+  - name: update repo
+    apt:
+      update_cache: true
+
+  - name: install nginx, php + required libs
+    apt:
+      name:
+        - software-properties-common
+        - nginx
+        - php8.0
+        - php-common
+        - php-fpm
+        - php-pgsql
+        - php-bcmath
+        - php-curl
+        - php-json
+        - php-mbstring
+        - php-xml
+        - php-zip
+        - php-gd
+        - php-redis
+        - git
+        - redis-server
+        - rsync
+      state: present
+
+  - name: run geerlingguy.mysql role
+    include_role: 
+      name: geerlingguy.mysql
+
+  - name: load nginx config file
+    include: load_nginx_confs.yml
+    when: load_nginx_confs == true
+
+  - name: Add Mysql DB and user
+    include: setup_mysql_db.yml
+    when: create_mysql_db == true
+
+  - name: install composer
+    include_role: 
+      name: geerlingguy.composer
+    when: install_composer == true  
+      
+  ## start services
+  - name: start php-fpm
+    service: 
+      name: php8.0-fpm
+      state: started
+      enabled: yes
+
+  - name: start nginx 
+    service: 
+      name: nginx 
+      state: started
+      enabled: yes
+
+  - name: Confirm PHP version is correct.
+    shell: php -v | grep -F '{{ php_version }}'
+    changed_when: false  
+
+  become: true  

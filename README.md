@@ -39,3 +39,20 @@ mysql_db: <db_name>
 mysql_user: <db_username>
 mysql_pass: <db_user_password>
 ```
+
+## Example 
+
+`install_lemp.yml`
+```
+---
+- hosts: "{{ host }}"
+  gather_facts: yes
+  vars: 
+    - mysql_db: t8tv
+    - mysql_user: t8tv
+    - mysql_pass: Lsj*63$&eUd
+  roles: 
+    - role: lemp
+```
+
+Run: `ansbiel-playbook install_lemp.yml -e "host=web"`
