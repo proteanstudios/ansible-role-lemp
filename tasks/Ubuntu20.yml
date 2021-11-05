@@ -22,7 +22,7 @@
         - php8.0
         - php-common
         - php-fpm
-        - php-pgsql
+        - php-mysql
         - php-bcmath
         - php-curl
         - php-json
